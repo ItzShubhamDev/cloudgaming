@@ -3,16 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const supabase = await createClient();
-
-  const { error } = await supabase.auth.signOut();
+  const { data, error } = await supabase.from("payments").select("*");
 
   if (error) {
-    return NextResponse.json({
-      success: false,
-    });
+    return NextResponse.json({ error }, { status: 500 });
   }
 
-  return NextResponse.json({
-    success: true,
-  });
+  return NextResponse.json(data);
 }

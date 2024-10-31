@@ -26,7 +26,7 @@ export default function Login() {
     } else if (r.success) {
       toast.success("Logged in successfully");
       NProgress.start();
-      router.push("/");
+      router.push("/account");
     }
   };
 

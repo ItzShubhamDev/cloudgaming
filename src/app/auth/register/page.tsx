@@ -27,7 +27,7 @@ export default function Register() {
     } else if (r.success) {
       toast.success("Account created successfully");
       NProgress.start();
-      router.push("/");
+      router.push("/account");
     }
   };
 

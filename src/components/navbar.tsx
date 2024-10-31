@@ -4,21 +4,21 @@ import Link from "next/link";
 import { Cloud, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [logged, setLogged] = useState(false);
 
   useEffect(() => {
-    fetch("/api/user")
-      .then((r) => r.json())
-      .then((r) => {
-        if (r.success) {
-          setLogged(true);
-        } else {
-          setLogged(false);
-        }
-      });
+    const supabase = createClient();
+    supabase.auth.getUser().then((r) => {
+      if (r.data.user) {
+        setLogged(true);
+      } else {
+        setLogged(false);
+      }
+    });
   }, [pathname]);
 
   return (

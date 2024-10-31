@@ -5,33 +5,31 @@ import { UserIcon, CreditCard, Bell, Shield, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import nProgress from "nprogress";
 import { User } from "@supabase/supabase-js";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Account() {
   const [activeTab, setActiveTab] = useState("profile");
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-
-  async function getUser() {
-    const res = await fetch("/api/user");
-    const data = await res.json();
-    if (!data.success) {
-      nProgress.start();
-      router.push("/auth/login");
-    }
-    return data.data.user;
-  }
+  const supabase = createClient();
 
   async function signOut() {
-    const res = await fetch("/api/user/signout");
-    const data = await res.json();
-    if (data.success) {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
       nProgress.start();
       router.push("/auth/login");
     }
   }
 
   useEffect(() => {
-    getUser().then((data) => setUser(data));
+    supabase.auth.getUser().then((r) => {
+      if (r.data.user) {
+        setUser(r.data.user);
+      } else {
+        nProgress.start();
+        router.push("/auth/login");
+      }
+    });
   }, []);
 
   return (
@@ -71,7 +69,10 @@ export default function Account() {
                   <span>{item.label}</span>
                 </button>
               ))}
-              <button className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-400 hover:bg-gray-700" onClick={signOut}>
+              <button
+                className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-red-400 hover:bg-gray-700"
+                onClick={signOut}
+              >
                 <LogOut className="h-5 w-5" />
                 <span>Sign Out</span>
               </button>
@@ -102,6 +103,16 @@ export default function Account() {
                       <input
                         type="email"
                         defaultValue={user?.email}
+                        className="w-full bg-gray-700 rounded-lg px-4 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        ID
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue={user?.id}
                         className="w-full bg-gray-700 rounded-lg px-4 py-2"
                       />
                     </div>

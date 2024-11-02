@@ -33,10 +33,11 @@ export async function GET() {
 }
 
 function currentPlan(payments: Payments[]) {
-  if (payments.length === 0) {
+  const paid = payments.filter((p) => p.paid);
+  if (paid.length === 0) {
     return;
   }
-  const latestPayment = payments.reduce((prevPayment, payment) => {
+  const latestPayment = paid.reduce((prevPayment, payment) => {
     return new Date(prevPayment.created_at) > new Date(payment.created_at)
       ? prevPayment
       : payment;

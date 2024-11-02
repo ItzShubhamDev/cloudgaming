@@ -14,6 +14,15 @@ type Plan = {
   popular?: boolean;
 };
 
+type History = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  amount: number;
+  paid: boolean;
+};
+
 export default function Page() {
   const query = useSearchParams();
   const [cashfree, setCashfree] = useState<any>(null);
@@ -26,7 +35,7 @@ export default function Page() {
   useEffect(() => {
     fetch("/api/plans").then(async (r) => {
       const data = await r.json();
-      const plans = await data.plan as Plan[];
+      const plans = (await data.data) as Plan[];
       setPlans(plans);
     });
   }, []);
@@ -40,7 +49,7 @@ export default function Page() {
     const p = plan?.price || 0;
     const h = plan?.hours || 0;
     if (hours <= h) return setPrice(p);
-    setPrice(parseFloat((p + (hours - h)* 29).toFixed(2)));
+    setPrice(parseFloat((p + (hours - h) * 29).toFixed(2)));
   }, [hours, duration, plan]);
 
   async function initialize() {
@@ -51,6 +60,13 @@ export default function Page() {
   }
 
   async function createOrder(price: number, plan: string) {
+    const p = await fetch("/api/plan");
+    const d = await p.json();
+    const current = d.data as History | null;
+    if (current && checkActive(current.created_at!)) {
+      toast.error("You already have an active plan");
+      return { orderId: null, sessionId: null };
+    }
     const res = await fetch("/api/orders/create", {
       method: "POST",
       body: JSON.stringify({ price, plan }),
@@ -93,6 +109,7 @@ export default function Page() {
   async function handle(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const { orderId, sessionId } = await createOrder(price, duration);
+    if (!orderId || !sessionId) return;
     const r = await doPayment(sessionId);
     if (r.paymentDetails) {
       const r = await verifyPayment(orderId);
@@ -176,4 +193,11 @@ export default function Page() {
       </div>
     </div>
   );
+}
+
+function checkActive(date: string) {
+  const d = new Date(date);
+  const n = new Date();
+  d.setMonth(d.getMonth() + 1);
+  return d > n;
 }

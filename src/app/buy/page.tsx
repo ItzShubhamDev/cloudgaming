@@ -17,25 +17,29 @@ type Plan = {
 export default function Page() {
   const query = useSearchParams();
   const [cashfree, setCashfree] = useState<any>(null);
-  const [sessionId, setSessionId] = useState<string>("");
-  const [orderId, setOrderId] = useState<string>("");
-  const duration = query.get("plan") || "weekly";
+  const duration = (query.get("plan") || "weekly").toLowerCase();
   const [hours, setHours] = useState<number>(1);
   const [plan, setPlan] = useState<Plan>();
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [price, setPrice] = useState<number>(10);
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     fetch("/api/plans").then(async (r) => {
       const plans = (await r.json()) as Plan[];
       setPlans(plans);
-      const p = plans.find((p) => p.name.toLowerCase() === duration);
-      setPlan(p);
     });
   }, []);
 
   useEffect(() => {
-    setPrice(parseFloat((plan?.price! + hours * 29).toFixed(2)));
+    const p = plans.find((p) => p.name.toLowerCase() === duration);
+    setPlan(p);
+  }, [duration, plans]);
+
+  useEffect(() => {
+    const p = plan?.price || 0;
+    const h = plan?.hours || 0;
+    if (hours <= h) return setPrice(p);
+    setPrice(parseFloat((p + hours * 29).toFixed(2)));
   }, [hours, duration, plan]);
 
   async function initialize() {
@@ -73,6 +77,18 @@ export default function Page() {
     return r;
   }
 
+  async function verifyPayment(orderId: string) {
+    const res = await fetch("/api/orders/verify", {
+      method: "POST",
+      body: JSON.stringify({ orderId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    return data;
+  }
+
   async function handle(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const { orderId, sessionId } = await createOrder(price, duration);
@@ -93,45 +109,9 @@ export default function Page() {
     }
   }
 
-  async function verifyPayment(orderId: string) {
-    const res = await fetch("/api/orders/verify", {
-      method: "POST",
-      body: JSON.stringify({ orderId }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    return data;
-  }
-
   useEffect(() => {
     initialize();
   }, []);
-  // return (
-  //   <div className="pt-24">
-  //     <div>
-  //       <input
-  //         type="text"
-  //         id="sessionId"
-  //         placeholder="Enter Session ID"
-  //         value={sessionId}
-  //         onChange={(e) => setSessionId(e.target.value)}
-  //       />
-  //       <button onClick={() => doPayment(sessionId)}>Pay</button>
-  //     </div>
-  //     <div>
-  //       <input
-  //         type="text"
-  //         id="orderId"
-  //         placeholder="Enter Order ID"
-  //         value={orderId}
-  //         onChange={(e) => setOrderId(e.target.value)}
-  //       />
-  //       <button onClick={() => verifyPayment(orderId)}>Verify</button>
-  //     </div>
-  //   </div>
-  // );
 
   return (
     <div className="min-h-screen bg-gray-900 pt-24 pb-12 text-white">
@@ -163,7 +143,7 @@ export default function Page() {
               <span className="text-gray-400 ml-2">
                 /{plan?.name.substring(0, plan?.name.length - 2).toLowerCase()}
               </span>
-              {plan?.name !== "Hourly" && (
+              {plan?.name.toLowerCase() !== "hourly" && (
                 <>
                   <Plus className="h-5 w-5 text-blue-500 mx-2" />
                   <span className="text-sm font-bold">₹29</span>
@@ -175,7 +155,7 @@ export default function Page() {
               <span>*Prepaid Hours -</span>
               <span className="ml-1">{plan?.hours}</span>
             </div>
-            {plan?.name == "Hourly" && (
+            {plan?.name.toLowerCase() === "hourly" && (
               <div className="items-baseline mb-4 text-sm text-gray-400">
                 *Data is not saved for hourly plans
               </div>

@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Check } from "lucide-react";
+import Link from "next/link";
 
 type Plan = {
   name: string;
@@ -11,65 +12,15 @@ type Plan = {
   popular?: boolean;
 };
 
-const plans: Plan[] = [
-  {
-    name: "Hourly",
-    price: 29,
-    hours: 0,
-    features: [
-      "RTX 3060 GPU",
-      "6-Core CPU",
-      "16GB RAM",
-      "250GB NVMe Storage",
-      "1Gbps Network",
-      "Basic Support",
-    ],
-  },
-  {
-    name: "Weekly",
-    price: 99,
-    hours: 5,
-    features: [
-      "RTX 3080 GPU",
-      "8-Core CPU",
-      "32GB RAM",
-      "500GB NVMe Storage",
-      "2.5Gbps Network",
-      "Priority Support",
-    ],
-  },
-  {
-    name: "Monthly",
-    price: 299,
-    hours: 30,
-    popular: true,
-    features: [
-      "RTX 4090 GPU",
-      "16-Core CPU",
-      "64GB RAM",
-      "1TB NVMe Storage",
-      "10Gbps Network",
-      "24/7 Premium Support",
-    ],
-  },
-];
-
 export default function Pricing() {
-  async function createOrder(price: number, plan: "weekly" | "monthly") {
-    try {
-      const res = await fetch("/api/orders/create", {
-        method: "POST",
-        body: JSON.stringify({ price, plan }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const [plans, setPlans] = useState<Plan[]>();
+
+  useEffect(() => {
+    fetch("/api/plans").then(async (r) => {
+      const plans = (await r.json()) as Plan[];
+      setPlans(plans);
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 pt-24 pb-12 text-white">
@@ -84,7 +35,7 @@ export default function Pricing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan) => (
+          {plans?.map((plan) => (
             <div
               key={plan.name}
               className={`relative bg-gray-800 rounded-2xl p-8 ${
@@ -116,16 +67,19 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <button
+              <Link
                 className={`block text-center py-3 px-6 rounded-lg font-semibold w-full ${
                   plan.popular
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-700 hover:bg-gray-600"
                 }`}
-                onClick={() => createOrder(plan.price, "monthly")}
+                href={{
+                  pathname: "/buy",
+                  query: { plan: plan.name },
+                }}
               >
                 Get Started
-              </button>
+              </Link>
             </div>
           ))}
         </div>

@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import NextTopLoader from "nextjs-toploader";
 import ToastProvider from "@/providers/ToastProvider";
+import { Suspense } from "react";
+import Loader from "@/components/loader";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,7 +35,9 @@ export default function RootLayout({
       >
         <NextTopLoader color="#2563eb" />
         <Navbar />
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          <Suspense fallback={<Loader />}>{children}</Suspense>
+        </ToastProvider>
       </body>
     </html>
   );

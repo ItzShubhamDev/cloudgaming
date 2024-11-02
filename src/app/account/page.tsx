@@ -7,9 +7,20 @@ import nProgress from "nprogress";
 import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 
+type History = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  amount: number;
+  paid: boolean;
+};
+
 export default function Account() {
   const [activeTab, setActiveTab] = useState("profile");
   const [user, setUser] = useState<User | null>(null);
+  const [history, setHistory] = useState<History[] | null>(null);
+  const [current, setCurrent] = useState<History | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -20,6 +31,22 @@ export default function Account() {
       router.push("/auth/login");
     }
   }
+
+  useEffect(() => {
+    fetch("/api/orders").then(async (r) => {
+      const data = await r.json();
+      const history = data.data as History[];
+      setHistory(history);
+    });
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/plan").then(async (r) => {
+      const data = await r.json();
+      const current = data.data as History | null;
+      setCurrent(current);
+    });
+  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then((r) => {
@@ -207,48 +234,22 @@ export default function Account() {
                     <div className="bg-gray-700 rounded-lg p-6">
                       <div className="flex justify-between items-center mb-4">
                         <div>
-                          <p className="font-semibold">Pro Plan</p>
-                          <p className="text-sm text-gray-400">$49/month</p>
+                          <p className="font-semibold">
+                            {current?.name[0].toUpperCase()! +
+                              current?.name.substring(0, current.name.length)}
+                          </p>
+                          <p className="text-sm text-gray-400">₹{current?.amount}/month</p>
                         </div>
                         <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm">
-                          Active
                         </span>
                       </div>
-                      <div className="flex space-x-4">
-                        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">
-                          Upgrade Plan
-                        </button>
+                      <div className="flex">
                         <button className="border border-gray-600 hover:bg-gray-600 px-4 py-2 rounded-lg">
                           Cancel Plan
                         </button>
                       </div>
                     </div>
                   </div>
-
-                  {/* <div>
-                    <h3 className="text-lg font-semibold mb-4">
-                      Payment Method
-                    </h3>
-                    <div className="bg-gray-700 rounded-lg p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <CreditCard className="h-6 w-6" />
-                          <div>
-                            <p className="font-medium">•••• •••• •••• 4242</p>
-                            <p className="text-sm text-gray-400">
-                              Expires 12/24
-                            </p>
-                          </div>
-                        </div>
-                        <button className="text-blue-400 hover:text-blue-300">
-                          Edit
-                        </button>
-                      </div>
-                      <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">
-                        Add Payment Method
-                      </button>
-                    </div>
-                  </div> */}
 
                   <div>
                     <h3 className="text-lg font-semibold mb-4">
@@ -265,26 +266,39 @@ export default function Account() {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="border-b border-gray-600">
-                            <td className="p-4">Mar 1, 2024</td>
-                            <td className="p-4">Pro Plan - Monthly</td>
-                            <td className="p-4">$49.00</td>
-                            <td className="p-4">
-                              <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-sm">
-                                Paid
-                              </span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td className="p-4">Feb 1, 2024</td>
-                            <td className="p-4">Pro Plan - Monthly</td>
-                            <td className="p-4">$49.00</td>
-                            <td className="p-4">
-                              <span className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-sm">
-                                Paid
-                              </span>
-                            </td>
-                          </tr>
+                          {history?.map((h) => (
+                            <tr key={h.id} className="border-b border-gray-600">
+                              <td className="p-4">
+                                {new Date(h.created_at).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  }
+                                )}
+                              </td>
+                              <td className="p-4">
+                                {h.name[0].toUpperCase() +
+                                  h.name.substring(1, h.name.length)}
+                              </td>
+                              <td className="p-4">₹{h.amount}</td>
+                              <td className="p-4">
+                                <span
+                                  className={
+                                    "px-2 py-1 rounded-full text-sm " +
+                                    `${
+                                      h.paid
+                                        ? "bg-green-500/20 text-green-400"
+                                        : "bg-red-500/20 text-red-400"
+                                    }`
+                                  }
+                                >
+                                  {h.paid ? "Paid" : "Unpaid"}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>

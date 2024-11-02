@@ -17,7 +17,8 @@ export default function Pricing() {
 
   useEffect(() => {
     fetch("/api/plans").then(async (r) => {
-      const plans = (await r.json()) as Plan[];
+      const data = await r.json();
+      const plans = await data.data as Plan[];
       setPlans(plans);
     });
   }, []);
@@ -75,7 +76,7 @@ export default function Pricing() {
                 }`}
                 href={{
                   pathname: "/buy",
-                  query: { plan: plan.name },
+                  query: { plan: plan.name.toLowerCase() },
                 }}
               >
                 Get Started

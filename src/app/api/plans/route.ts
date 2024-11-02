@@ -18,7 +18,6 @@ const plans = [
     name: "Weekly",
     price: 99,
     hours: 5,
-    popular: true,
     features: [
       "RTX 3080 GPU",
       "8-Core CPU",
@@ -32,6 +31,7 @@ const plans = [
     name: "Monthly",
     price: 299,
     hours: 30,
+    popular: true,
     features: [
       "RTX 4090 GPU",
       "16-Core CPU",
@@ -44,5 +44,5 @@ const plans = [
 ];
 
 export async function GET() {
-  return NextResponse.json(plans);
+  return NextResponse.json({ success: true, data: plans });
 }

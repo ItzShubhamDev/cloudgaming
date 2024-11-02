@@ -25,7 +25,8 @@ export default function Page() {
 
   useEffect(() => {
     fetch("/api/plans").then(async (r) => {
-      const plans = (await r.json()) as Plan[];
+      const data = await r.json();
+      const plans = await data.plan as Plan[];
       setPlans(plans);
     });
   }, []);
@@ -39,7 +40,7 @@ export default function Page() {
     const p = plan?.price || 0;
     const h = plan?.hours || 0;
     if (hours <= h) return setPrice(p);
-    setPrice(parseFloat((p + hours * 29).toFixed(2)));
+    setPrice(parseFloat((p + (hours - h)* 29).toFixed(2)));
   }, [hours, duration, plan]);
 
   async function initialize() {
@@ -60,8 +61,8 @@ export default function Page() {
     const data = await res.json();
     console.log(data);
     return {
-      orderId: data.order.order_id,
-      sessionId: data.order.payment_session_id,
+      orderId: data.data.order_id,
+      sessionId: data.data.payment_session_id,
     };
   }
 

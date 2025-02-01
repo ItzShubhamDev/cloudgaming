@@ -132,10 +132,10 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-24 pb-12 text-white">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24 pb-12 text-black dark:text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-gray-800 rounded-2xl p-8">
+          <div className="bg-gray-200 dark:bg-gray-800 rounded-2xl p-8">
             <div className="text-xl font-semibold mb-4">Hourly Pricing</div>
             <div className="mb-6">
               <input
@@ -145,42 +145,42 @@ export default function Page() {
                 placeholder="Hours"
                 value={hours}
                 onChange={(e) => setHours(parseInt(e.target.value))}
-                className="bg-gray-700 text-white w-full rounded-lg"
+                className="accent-gray-700 dark:accent-gray-300 text-white w-full rounded-lg"
               />
             </div>
             <div className="flex items-baseline mb-6 text-lg  font-bold">
               <span className="">Hours - </span>
-              <span className="text-gray-400 ml-2">{hours}</span>
+              <span className="text-gray-600 dark:text-gray-400 ml-2">{hours}</span>
             </div>
           </div>
-          <div className="bg-gray-800 rounded-2xl p-8">
+          <div className="bg-gray-200 dark:bg-gray-800 rounded-2xl p-8">
             <div className="text-lg font-semibold mb-4">Plan Details</div>
             <div className="text-xl font-semibold mb-4">{plan?.name}</div>
             <div className="flex items-baseline mb-4">
               <span className="text-4xl font-bold">₹{plan?.price}</span>
-              <span className="text-gray-400 ml-2">
+              <span className="text-gray-600 dark:text-gray-400 ml-2">
                 /{plan?.name.substring(0, plan?.name.length - 2).toLowerCase()}
               </span>
               {plan?.name.toLowerCase() !== "hourly" && (
                 <>
                   <Plus className="h-5 w-5 text-blue-500 mx-2" />
                   <span className="text-sm font-bold">₹29</span>
-                  <span className="text-gray-400 ml-1 text-xs">/hour</span>
+                  <span className="text-gray-600 dark:text-gray-400 ml-1 text-xs">/hour</span>
                 </>
               )}
             </div>
-            <div className="flex items-baseline mb-2 text-sm text-gray-400">
+            <div className="flex items-baseline mb-2 text-sm text-gray-600 dark:text-gray-400">
               <span>*Prepaid Hours -</span>
               <span className="ml-1">{plan?.hours}</span>
             </div>
             {plan?.name.toLowerCase() === "hourly" && (
-              <div className="items-baseline mb-4 text-sm text-gray-400">
+              <div className="items-baseline mb-4 text-sm text-gray-600 dark:text-gray-400">
                 *Data is not saved for hourly plans
               </div>
             )}
             <div className="flex items-baseline mb-4 text-lg  font-bold">
               <span className="">Total - </span>
-              <span className="text-gray-400 ml-2">₹{price}</span>
+              <span className="text-gray-600 dark:text-gray-400 ml-2">₹{price}</span>
             </div>
             <button
               onClick={handle}

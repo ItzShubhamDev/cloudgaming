@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CloudGaming Website Template
 
-## Getting Started
+A template for cloud gaming services with payments from cashfree (Incomplete)
 
-First, run the development server:
+**Note** - AI was used in generating of some pages
+
+## Environment Variables
+
+These are the environment variables needed for self hosting .env file
+
+`NEXT_PUBLIC_SUPABASE_URL`
+
+`NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+`CASHFREE_CLIENT_ID`
+
+`CASHFREE_CLIENT_SECRET`
+
+## Run Locally
+
+
+#### Prerequisites
+
+Node.JS `20` or later
+Supabase project
+Cashfree account
+
+Clone the project
+
+```bash
+git clone https://github.com/itzshubhamdev/cloudgaming
+```
+
+Go to the project directory
+
+```bash
+cd cloudgaming
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Configure Environment Variables, then run using
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Clone the project
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+git clone https://github.com/itzshubhamdev/cloudgaming
+```
 
-## Learn More
+Go to the project directory
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd cloudgaming
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Install dependencies
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm install
+```
 
-## Deploy on Vercel
+Configure Environment Variables, then build using
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Build the files
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+```
+
+Start the server
+
+```bash
+npm run start
+```

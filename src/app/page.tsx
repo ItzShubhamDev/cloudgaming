@@ -3,7 +3,7 @@ import { Cpu, Gamepad, Gauge, Shield } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-900 text-white">
       {/* Hero Section */}
       <div className="relative h-screen">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80')] bg-cover bg-center">
@@ -37,11 +37,11 @@ export default function Home() {
       </div>
 
       {/* Features Section */}
-      <div className="py-24 bg-gray-900">
+      <div className="py-24 bg-gray-100 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Why Choose Us?</h2>
-            <p className="text-gray-400">
+            <h2 className="text-4xl font-bold mb-4 text-black dark:text-white">Why Choose Us?</h2>
+            <p className="text-gray-600 dark:text-gray-400">
               Experience the future of cloud gaming infrastructure
             </p>
           </div>
@@ -104,10 +104,10 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="bg-gray-800 p-6 rounded-xl hover:bg-gray-750 transition-colors">
+    <div className="bg-gray-200 dark:bg-gray-800 p-6 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
       <div className="text-blue-500 mb-4 w-12 h-12">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-gray-400">{description}</p>
+      <h3 className="text-gray-800 dark:text-white text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600 dark:text-gray-400">{description}</p>
     </div>
   );
 }

@@ -24,13 +24,13 @@ export default function Pricing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-24 pb-12 text-white">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24 pb-12 text-black dark:text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400">
             Choose the perfect plan for your gaming needs
           </p>
         </div>
@@ -39,7 +39,7 @@ export default function Pricing() {
           {plans?.map((plan) => (
             <div
               key={plan.name}
-              className={`relative bg-gray-800 rounded-2xl p-8 ${
+              className={`relative bg-gray-200 dark:bg-gray-800 rounded-2xl p-8 ${
                 plan.popular ? "border-2 border-blue-500" : ""
               }`}
             >
@@ -54,7 +54,7 @@ export default function Pricing() {
               <div className="text-xl font-semibold mb-4">{plan.name}</div>
               <div className="flex items-baseline mb-6">
                 <span className="text-4xl font-bold">₹{plan.price}</span>
-                <span className="text-gray-400 ml-2">
+                <span className="text-gray-600 dark:text-gray-400 ml-2">
                   /{plan?.name.substring(0, plan.name.length - 2).toLowerCase()}
                 </span>
               </div>
@@ -69,7 +69,7 @@ export default function Pricing() {
               </ul>
 
               <Link
-                className={`block text-center py-3 px-6 rounded-lg font-semibold w-full ${
+                className={`block text-center py-3 px-6 rounded-lg font-semibold text-white w-full ${
                   plan.popular
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-700 hover:bg-gray-600"
